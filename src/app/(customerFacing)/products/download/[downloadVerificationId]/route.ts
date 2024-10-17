@@ -1,4 +1,3 @@
-
 export async function GET(
   req: any,
   {
@@ -6,20 +5,22 @@ export async function GET(
   }: { params: { downloadVerificationId: string } }
 ) {
   var db = require("@/db/db");
-var { NextRequest, NextResponse } = require("next/server");
-var fs = require("fs/promises");
-var path = require("path"); // Import the path module
+  var { NextRequest, NextResponse } = require("next/server");
+  var fs = require("fs/promises");
+  var path = require("path"); // Import the path module
   // Validate downloadVerificationId
   if (!downloadVerificationId) {
     console.error("downloadVerificationId is missing");
-    return NextResponse.redirect(new URL("/products/download/expired", req.url));
+    return NextResponse.redirect(
+      new URL("/products/download/expired", req.url)
+    );
   }
 
   // Fetch data from the database
   const data = await db.downloadVerification.findUnique({
-    where: { 
-      id: downloadVerificationId, 
-      expiresAt: { gt: new Date() } 
+    where: {
+      id: downloadVerificationId,
+      expiresAt: { gt: new Date() },
     },
     select: { product: { select: { filePath: true, name: true } } },
   });
@@ -27,11 +28,13 @@ var path = require("path"); // Import the path module
   // Handle case when no valid data is found
   if (data == null) {
     console.error(`No valid download found for id: ${downloadVerificationId}`);
-    return NextResponse.redirect(new URL("/products/download/expired", req.url));
+    return NextResponse.redirect(
+      new URL("/products/download/expired", req.url)
+    );
   }
 
   // Construct the file path relative to the public directory
-  const filePath = path.resolve(process.cwd(), 'public', data.product.filePath);
+  const filePath = path.resolve(process.cwd(), "public", data.product.filePath);
 
   try {
     // Check file stats and read the file
@@ -45,10 +48,11 @@ var path = require("path"); // Import the path module
         "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
         "Content-Length": size.toString(),
       },
-
     });
   } catch (error) {
     console.error("File operation failed:", error);
-    return NextResponse.redirect(new URL("/products/download/expired", req.url));
+    return NextResponse.redirect(
+      new URL("/products/download/expired", req.url)
+    );
   }
 }
