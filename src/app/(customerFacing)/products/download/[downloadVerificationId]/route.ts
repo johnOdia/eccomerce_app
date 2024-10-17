@@ -1,14 +1,14 @@
-import db from "@/db/db";
-import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path"; // Import the path module
 
 export async function GET(
-  req: NextRequest,
+  req: any,
   {
     params: { downloadVerificationId },
   }: { params: { downloadVerificationId: string } }
 ) {
+  var db = require("@/db/db");
+var { NextRequest, NextResponse } = require("next/server");
+var fs = require("fs/promises");
+var path = require("path"); // Import the path module
   // Validate downloadVerificationId
   if (!downloadVerificationId) {
     console.error("downloadVerificationId is missing");
@@ -45,7 +45,7 @@ export async function GET(
         "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
         "Content-Length": size.toString(),
       },
-      
+
     });
   } catch (error) {
     console.error("File operation failed:", error);
