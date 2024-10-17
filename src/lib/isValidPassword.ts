@@ -2,7 +2,7 @@ export async function isValidPassword(
   password: string,
   hashedPassword: string
 ) {
-  return (await hashPassword(password)) === hashedPassword
+  return password === hashedPassword
 }
 
 async function hashPassword(password: string) {
