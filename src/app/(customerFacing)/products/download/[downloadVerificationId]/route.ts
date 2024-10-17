@@ -45,6 +45,7 @@ export async function GET(
         "Content-Disposition": `attachment; filename="${data.product.name}.${extension}"`,
         "Content-Length": size.toString(),
       },
+      
     });
   } catch (error) {
     console.error("File operation failed:", error);
